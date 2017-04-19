@@ -69,6 +69,6 @@ object HorizontalBoxBlur {
 
     tasks.map(t => t.join())
   }
-  
+
 
 }
