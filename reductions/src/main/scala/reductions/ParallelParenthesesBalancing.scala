@@ -96,7 +96,6 @@ object ParallelParenthesesBalancing {
         val midPoint = from + (until - from) / 2
         val (p, p2) = parallel(reduce(from, midPoint), reduce(midPoint, until))
 
-        // This is my best piece of code ever
         if (p._1 < 0 && p2._1 > 0) (p._1 , p2._1 + p._2 + p2._2)
         else if (p2._1 < 0 && p._2 > 0) (p._1 + p2._1 + p._2 ,  + p2._2)
         else (p._1 + p2._1, p._2 + p2._2)
