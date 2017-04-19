@@ -41,22 +41,70 @@ object ParallelParenthesesBalancing {
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
   def balance(chars: Array[Char]): Boolean = {
-    ???
+    def checkParen(chars: Array[Char], openCount: Int): Boolean = {
+      if (chars.isEmpty) openCount == 0
+      else if (openCount < 0) false
+      else if (chars.head == '(') checkParen(chars.tail, openCount + 1)
+      else if (chars.head == ')') checkParen(chars.tail, openCount - 1)
+      else checkParen(chars.tail, openCount)
+    }
+    checkParen(chars, 0)
   }
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean = {
 
-    def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
-      ???
+    def traverse(idx: Int, until: Int)  = {
+      var index = idx
+      var start = 0
+      var end = 0
+      var switched = false
+
+      while (index < until){
+        if (start < 0){
+          switched = true
+        } else {
+          switched = false
+        }
+
+        if (chars(index) == '('){
+          if (switched){
+            end += 1
+          } else {
+            start += 1
+          }
+
+        }
+        if (chars(index) == ')')
+        {
+          if (switched) {
+            end -= 1
+          } else {
+            start -= 1
+          }
+        }
+
+        index += 1
+      }
+      (start,  end)
     }
 
-    def reduce(from: Int, until: Int) /*: ???*/ = {
-      ???
+    def reduce(from: Int, until: Int): (Int, Int) = {
+      if (until - from <= threshold) traverse (from, until)
+      else {
+        val midPoint = from + (until - from) / 2
+        val (p, p2) = parallel(reduce(from, midPoint), reduce(midPoint, until))
+
+        // This is my best piece of code ever
+        if (p._1 < 0 && p2._1 > 0) (p._1 , p2._1 + p._2 + p2._2)
+        else if (p2._1 < 0 && p._2 > 0) (p._1 + p2._1 + p._2 ,  + p2._2)
+        else (p._1 + p2._1, p._2 + p2._2)
+      }
     }
 
-    reduce(0, chars.length) == ???
+    val res = reduce(0, chars.length)
+    res._1 + res._2 == 0 && res._1 >= 0
   }
 
   // For those who want more:
